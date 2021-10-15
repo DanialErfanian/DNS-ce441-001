@@ -51,3 +51,11 @@ SHA1="$(sha1sum fuzz/README | cut -d' ' -f1)"
 if [ "$SHA1" == "$ORIG_SHA1" ]; then
     echo "${BD}${FR}fill in fuzz/README${RST}"
 fi
+
+# Extra credit
+if [ -f sploits/extra-credit.txt ]; then
+    RESULT="${FG}present${RST}"
+else
+    RESULT="${FY}not present${RST}"
+fi
+echo "${BD}extra credit${RST}: $RESULT"

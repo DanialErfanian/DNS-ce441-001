@@ -9,8 +9,8 @@ LDFLAGS := -m32
 LDLIBS :=
 
 # sources
-sources := target1.c target2.c target3.c target4.c target5.c target6.c tmalloc.c
-targets := target1 target2 target3 target4 target5 target6 
+sources := target1.c target2.c target3.c target4.c target5.c target6.c extra-credit.c tmalloc.c
+targets := target1 target2 target3 target4 target5 target6 extra-credit
 
 # gmake magic
 .PHONY: default all clean
@@ -31,6 +31,9 @@ install: mkexecstack
 
 %.o: %.c
 	$(CC) $< -c -o $@ $(CFLAGS)
+
+extra-credit.o: extra-credit.c
+	$(CC) $< -c -o $@ -fstack-protector-all -ggdb -m32 -g -std=c99 -D_GNU_SOURCE
 
 %.o: %.S
 	$(CC) $< -c -o $@ $(CFLAGS)
