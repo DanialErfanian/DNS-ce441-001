@@ -33,3 +33,10 @@ p/x &input3
 ./ROP test
 ```
 به `shell` برسیم.
+
+
+# Run with:
+```
+python3 exp_rop.py
+./ROP
+```

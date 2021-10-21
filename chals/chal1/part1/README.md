@@ -37,3 +37,8 @@ print("--->", sh.recvline(timeout=1))
 sh.send(b"1\n")
 sh.interactive()
 ```
+
+# Run with
+```
+python3 exp.py
+```
