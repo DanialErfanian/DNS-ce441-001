@@ -1,0 +1,27 @@
+start_time        : 1635008089
+last_update       : 1635008150
+fuzzer_pid        : 19452
+cycles_done       : 0
+execs_done        : 223966
+execs_per_sec     : 3434.76
+paths_total       : 271
+paths_favored     : 102
+paths_found       : 270
+paths_imported    : 0
+max_depth         : 3
+cur_path          : 65
+pending_favs      : 83
+pending_total     : 249
+variable_paths    : 0
+stability         : 100.00%
+bitmap_cvg        : 3.48%
+unique_crashes    : 3
+unique_hangs      : 0
+last_path         : 1635008149
+last_crash        : 1635008149
+last_hang         : 0
+execs_since_crash : 4803
+exec_timeout      : 20
+afl_banner        : bsdtar
+afl_version       : 2.40b
+command_line      : afl-fuzz -i testcases -o results install/bin/bsdtar -O -xf @@
