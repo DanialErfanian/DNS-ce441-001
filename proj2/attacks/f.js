@@ -1,6 +1,9 @@
-// We should upload this file to a public file server
+/// We could upload this file to a public file server
+// and user something like <script type="text/javascript" src="UPLOADED_URL"></script>
 // URL: https://bayanbox.ir/download/6080596571611379389/f.js
+// but we can also use plain js here
 
+document.getElementById("bitbar_display").innerHTML = "10 bitbars";
 function dastan() {
     console.log("amo")
     console.log(typeof total)

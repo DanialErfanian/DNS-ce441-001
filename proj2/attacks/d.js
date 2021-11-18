@@ -1,12 +1,8 @@
-document.cookie = "session=" + btoa(JSON.stringify(
-    {
-        "loggedIn": true,
-        "account": {
-            "username": "user1",
-            "hashedPassword": "a random text",
-            "salt": "21834708492970860368940710131560218741",
-            "profile": "",
-            "bitbars": Number(1.5e6)
-        }
-    }
-))
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+cookie = JSON.parse(atob(getCookie("session")))
+cookie.account.bitbars += 1000000
+document.cookie = "session=" + btoa(JSON.stringify(cookie))
