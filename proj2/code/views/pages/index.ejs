@@ -1,8 +1,12 @@
 <% if(loggedIn) { %>
 
   <p>You have <strong><%= account.bitbars %></strong> bitbars.</p>
+  <% if(errorMsg) { %>
+    <p class='error'> <%= errorMsg %> </p>
+  <% } %>
 
   <form class="pure-form pure-form-stacked" action="set_profile" method="post">
+    <input type="hidden" name="csrf" value="<%= csrfToken %>">
     <label for="new_profile">Your profile text</label>
     <textarea name="new_profile" rows="8" cols="50"><%= account.profile %></textarea>
     <p><input class="pure-button" type="submit" value="Update profile"></p>

@@ -2,7 +2,8 @@ FROM node:13
 
 
 # Create app directory
-ADD code/ /home/ce441/proj2/
+ADD code/yarn.lock /home/ce441/proj2/
+ADD code/package.json /home/ce441/proj2/
 WORKDIR /home/ce441/proj2/
 
 # Install app dependencies
@@ -10,6 +11,7 @@ WORKDIR /home/ce441/proj2/
 # where available (npm@5+)
 
 RUN npm install
+ADD code/ /home/ce441/proj2/
 
 # Bundle app source
 COPY . .

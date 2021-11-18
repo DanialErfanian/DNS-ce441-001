@@ -5,6 +5,7 @@ import cookieSession from 'cookie-session';
 import logger from 'morgan';
 
 import router from'./router';
+import {HMAC} from "./utils/crypto";
 
 const app = express();
 
@@ -32,6 +33,31 @@ app.use(cookieSession({
   sameSite: false,
   httpOnly: false,
 }));
+
+const SECRET = "AVeryVeryHardPasswordHereWithSomeRandomChars-#@%chiuwxv!`"
+app.use((req, res, next) => {
+  console.log(req.session)
+  const jwt = req.session.jwt
+  if (jwt)
+    delete req.session['jwt']
+  if ((jwt !== HMAC(SECRET, JSON.stringify(req.session || {})))) {
+    console.log("Invalid jwt token, resetting tokens")
+    req.session = {}
+    req.session.loggedIn = false;
+    req.session.account = {};
+  }
+  // res.on('finish', async () => {
+    // console.log(req.session)
+    // console.log("after");
+    // console.log(res.head)
+    // console.log(req)
+    // req.session.jwt = HMAC(SECRET, JSON.stringify(req.session || {}))
+    // console.log("req.session")
+    // console.log(req.session)
+  // })
+  next()
+})
+
 
 // initialize session if necessary
 app.use((req, res, next) => {

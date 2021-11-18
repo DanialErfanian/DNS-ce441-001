@@ -8,7 +8,43 @@ import { generateRandomness, HMAC, KDF, checkPassword } from './utils/crypto';
 const router = express.Router();
 const dbPromise = sqlite.open('./db/database.sqlite')
 
+const USERNAME_PATTERN = /^[a-zA-Z0-9\-_.]+$/;
+const SECRET = "AVeryVeryHardPasswordHereWithSomeRandomChars-#@%chiuwxv!`"
+
+function escapeHtml(unsafe)
+{
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+function createTimeSlot(date) {
+  // 2020-05-18-23
+  return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getHours()
+}
+
+function validateCsrfToken(account, userInput) {
+  let date = new Date()
+  if (userInput === createCsrfToken(account, date))
+    return true
+  date.setHours(date.getHours() - 1)
+  if (userInput === createCsrfToken(account, date))
+    return true
+  return false
+}
+
+function createCsrfToken(account, date) {
+  return KDF(account.username + createTimeSlot(date), account.salt)
+}
+
 function render(req, res, next, page, title, errorMsg = false, result = null) {
+  var csrfToken;
+  if (req.session.loggedIn)
+    csrfToken = createCsrfToken(req.session.account, new Date())
+  req.session.jwt = HMAC(SECRET, JSON.stringify(req.session || {}))
   res.render(
     'layout/template', {
       page,
@@ -17,6 +53,7 @@ function render(req, res, next, page, title, errorMsg = false, result = null) {
       account: req.session.account,
       errorMsg,
       result,
+      csrfToken,
     }
   );
 }
@@ -28,6 +65,10 @@ router.get('/', (req, res, next) => {
 
 
 router.post('/set_profile', asyncMiddleware(async (req, res, next) => {
+  if(!validateCsrfToken(req.session.account, req.body.csrf)){
+    render(req, res, next, 'index', 'Bitbar Home', 'CSRF validation failed!');
+    return
+  }
   req.session.account.profile = req.body.new_profile;
   console.log(req.body.new_profile);
   const db = await dbPromise;
@@ -45,6 +86,10 @@ router.get('/login', (req, res, next) => {
 
 router.get('/get_login', asyncMiddleware(async (req, res, next) => {
   const db = await dbPromise;
+  if (!USERNAME_PATTERN.test(req.query.username)) {
+    render(req, res, next, 'login/form', 'Login', 'Invalid username!');
+    return
+  }
   const query = `SELECT * FROM Users WHERE username == "${req.query.username}";`;
   const result = await db.get(query);
   if(result) { // if this username actually exists
@@ -67,6 +112,10 @@ router.get('/register', (req, res, next) => {
 
 router.post('/post_register', asyncMiddleware(async (req, res, next) => {
   const db = await dbPromise;
+  if (!USERNAME_PATTERN.test(req.body.username)) {
+      render(req, res, next, 'register/form', 'Register', 'Invalid username!');
+      return
+  }
   let query = `SELECT * FROM Users WHERE username == "${req.body.username}";`;
   let result = await db.get(query);
   if(result) { // query returns results
@@ -100,6 +149,7 @@ router.get('/close', asyncMiddleware(async (req, res, next) => {
   };
   const db = await dbPromise;
   const query = `DELETE FROM Users WHERE username == "${req.session.account.username}";`;
+  // We can trust on this username beacuase we've create this ourself(becuase of JWT)
   await db.get(query);
   req.session.loggedIn = false;
   req.session.account = {};
@@ -122,6 +172,11 @@ router.get('/profile', asyncMiddleware(async (req, res, next) => {
 
   if(req.query.username != null) { // if visitor makes a search query
     const db = await dbPromise;
+    if (!USERNAME_PATTERN.test(req.query.username)) {
+      render(req, res, next, 'profile/view', 'View Profile',
+        'Please enter a valid username', req.session.account);
+      return
+    }
     const query = `SELECT * FROM Users WHERE username == "${req.query.username}";`;
     let result;
     try {
@@ -130,13 +185,17 @@ router.get('/profile', asyncMiddleware(async (req, res, next) => {
       result = false;
     }
     if(result) { // if user exists
+      // Avoid xss
+      result.profile = escapeHtml(result.profile)
       render(req, res, next, 'profile/view', 'View Profile', false, result);
     }
     else { // user does not exist
       render(req, res, next, 'profile/view', 'View Profile', `${req.query.username} does not exist!`, req.session.account);
     }
   } else { // visitor did not make query, show them their own profile
-    render(req, res, next, 'profile/view', 'View Profile', false, req.session.account);
+    const result = JSON.parse(JSON.stringify(req.session.account));
+    result.profile = escapeHtml(result.profile)
+    render(req, res, next, 'profile/view', 'View Profile', false, result);
   }
 }));
 
@@ -151,6 +210,10 @@ router.get('/transfer', (req, res, next) => {
 
 
 router.post('/post_transfer', asyncMiddleware(async(req, res, next) => {
+  if(!validateCsrfToken(req.session.account, req.body.csrf)){
+    render(req, res, next, 'transfer/form', 'Transfer Bitbars', 'CSRF validation failed!', {receiver:null, amount:null});
+    return
+  }
   if(req.session.loggedIn == false) {
     render(req, res, next, 'login/form', 'Login', 'You must be logged in to use this feature!');
     return;
@@ -163,7 +226,10 @@ router.post('/post_transfer', asyncMiddleware(async(req, res, next) => {
 
   const db = await dbPromise;
   let query = `SELECT * FROM Users WHERE username == "${req.body.destination_username}";`;
-  const receiver = await db.get(query);
+  var receiver = null;
+  if (USERNAME_PATTERN.test(req.body.destination_username)) {
+    receiver = await db.get(query);
+  }
   if(receiver) { // if user exists
     const amount = parseInt(req.body.quantity);
     if(Number.isNaN(amount) || amount > req.session.account.bitbars || amount < 1) {
@@ -179,7 +245,7 @@ router.post('/post_transfer', asyncMiddleware(async(req, res, next) => {
     await db.exec(query);
     render(req, res, next, 'transfer/success', 'Transfer Complete', false, {receiver, amount});
   } else { // user does not exist
-    let q = req.body.destination_username;
+    let q = escapeHtml(req.body.destination_username);
     if (q == null) q = '';
 
     let oldQ;
@@ -187,6 +253,7 @@ router.post('/post_transfer', asyncMiddleware(async(req, res, next) => {
       oldQ = q;
       q = q.replace(/script|SCRIPT|img|IMG/g, '');
     }
+    // There is no such a concern here, because it runs on users self computer.
     render(req, res, next, 'transfer/form', 'Transfer Bitbars', `User ${q} does not exist!`, {receiver:null, amount:null});
   }
 }));
