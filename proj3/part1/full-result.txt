@@ -1,0 +1,61 @@
+Nmap scan report for scanme.nmap.org (45.33.32.156)
+Host is up (0.32s latency).
+Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
+Not shown: 65525 closed ports
+PORT      STATE    SERVICE    VERSION
+22/tcp    open     ssh        OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+|   1024 ac:00:a0:1a:82:ff:cc:55:99:dc:67:2b:34:97:6b:75 (DSA)
+|   2048 20:3d:2d:44:62:2a:b0:5a:9d:b5:b3:05:14:c2:a6:b2 (RSA)
+|   256 96:02:bb:5e:57:54:1c:4e:45:2f:56:4c:4a:24:b2:57 (ECDSA)
+|_  256 33:fa:91:0f:e0:e1:7b:1f:6d:05:a2:b0:f1:54:41:56 (ED25519)
+25/tcp    filtered smtp
+53/tcp    open     domain     (generic dns response: NOTIMP)
+80/tcp    open     http       Apache httpd 2.4.7 ((Ubuntu))
+|_http-server-header: Apache/2.4.7 (Ubuntu)
+|_http-title: Go ahead and ScanMe!
+123/tcp   filtered ntp
+2000/tcp  open     tcpwrapped
+4153/tcp  filtered mbl-battd
+5060/tcp  open     tcpwrapped
+9929/tcp  open     nping-echo Nping echo
+31337/tcp open     tcpwrapped
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port53-TCP:V=7.80%I=7%D=12/13%Time=61B6FA5E%P=x86_64-pc-linux-gnu%r(DNS
+SF:VersionBindReqTCP,E,"\0\x0c\0\x06\x81\x84\0\0\0\0\0\0\0\0")%r(DNSStatus
+SF:RequestTCP,E,"\0\x0c\0\0\x90\x84\0\0\0\0\0\0\0\0");
+Aggressive OS guesses: Linux 2.6.32 (94%), Linux 4.4 (94%), Linux 2.6.32 or 3.10 (93%), Linux 2.6.32 - 2.6.35 (92%), Linux 2.6.32 - 2.6.39 (92%), Linux 4.0 (90%), Linux 3.11 - 4.1 (89%), Linux 3.2 - 3.8 (89%), Linux 2.6.18 (89%), Linux 2.6.32 - 3.0 (89%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 25 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 8888/tcp)
+HOP RTT       ADDRESS
+1   27.28 ms  _gateway (192.168.192.1)
+2   27.28 ms  192.168.210.1
+3   39.24 ms  172.17.1.214
+4   179.48 ms 172.17.1.209
+5   84.56 ms  172.17.1.201
+6   27.30 ms  172.26.0.34
+7   183.56 ms 172.26.0.10
+8   27.31 ms  192.168.152.153
+9   163.57 ms 10.10.53.69
+10  191.73 ms 10.202.4.83
+11  ...
+12  118.53 ms 10.21.0.10
+13  232.79 ms et0-0-33.francoforte73.fra.seabone.net (89.221.34.254)
+14  232.88 ms ae15.francoforte34.fra.seabone.net (89.221.34.251)
+15  ...
+16  410.08 ms if-ae-54-2.tcore1.fr0-frankfurt.as6453.net (195.219.219.72)
+17  337.34 ms if-ae-55-2.tcore2.pvu-paris.as6453.net (80.231.245.6)
+18  352.67 ms if-ae-15-2.tcore2.ldn-london.as6453.net (80.231.131.118)
+19  352.59 ms if-ae-55-2.tcore1.pye-paris.as6453.net (80.231.154.30)
+20  342.25 ms if-ae-22-2.tcore1.nto-newyork.as6453.net (63.243.128.17)
+21  393.77 ms if-ae-0-2.tcore1.sqn-sanjose.as6453.net (63.243.128.31)
+22  389.45 ms if-ae-36-2.tcore1.sqn-sanjose.as6453.net (63.243.128.167)
+23  228.32 ms if-ae-0-2.tcore1.sqn-sanjose.as6453.net (63.243.128.31)
+24  345.86 ms 216.6.33.114
+25  337.19 ms scanme.nmap.org (45.33.32.156)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1367.77 seconds

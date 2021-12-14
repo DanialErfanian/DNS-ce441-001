@@ -1,0 +1,4 @@
+1. sudo nmap -A -sS -p- -T4 scanme.nmap.org
+2. 45.33.32.156
+3. 22: ssh, 53: domain, 80: http, 2000: tcpwrapped, 5060 tcpwrapped, 9929 nping-echo, 31337 tcpwrapped
+4. SOFTWARE=Apache, VERSION=2.4.7, PORTS=80
